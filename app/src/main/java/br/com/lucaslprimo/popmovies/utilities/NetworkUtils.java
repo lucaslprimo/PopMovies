@@ -1,5 +1,8 @@
 package br.com.lucaslprimo.popmovies.utilities;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -23,28 +26,25 @@ public class NetworkUtils {
     //BASE API URL
     private final static String BASE_API_URL = "http://api.themoviedb.org/3/";
     //Base query to get popular movies
-    private final static String MOVIES_QUERY_BASE = "movie/popular";
+    private final static String MOVIES_QUERY_BASE = "movie/";
 
     //The api key to access the api service
     private final static String API_KEY_PARAM = "api_key";
     //Set the order of the movies list
-    private final static String ORDER_BY_PARAM = "order_by";
-
-    private final static String ORDER_BY_POPULAR = "popularity";
-    private final static String ORDER_BY_RATING = "rating";
+    public final static String ORDER_BY_POPULAR = "popular";
+    public final static String ORDER_BY_RATING = "top_rated";
 
 
     /**
      * Builds the URL used to talk to the weather server using a location. This location is based
      * on the query capabilities of the weather provider that we are using.
      *
-     * @param locationQuery The location that will be queried for.
      * @return The URL to use to query the weather server.
      */
-    public static URL buildUrl(String locationQuery, String orderBy) {
-        Uri builtUri = Uri.parse(BASE_API_URL).buildUpon()
+    public static URL buildUrl(String orderBy) {
+
+        Uri builtUri = Uri.parse(BASE_API_URL+MOVIES_QUERY_BASE+orderBy).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
-                .appendQueryParameter(ORDER_BY_PARAM, orderBy)
                 .build();
 
         URL url = null;
@@ -83,5 +83,15 @@ public class NetworkUtils {
         } finally {
             urlConnection.disconnect();
         }
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(cm!=null) {
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            return netInfo != null && netInfo.isConnectedOrConnecting();
+        }else
+            return false;
     }
 }

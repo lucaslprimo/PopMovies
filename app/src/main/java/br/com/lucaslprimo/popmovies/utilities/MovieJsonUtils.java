@@ -35,7 +35,7 @@ public class MovieJsonUtils {
 
             moviesArray = new Movie[results.length()];
 
-            for(int i = 0; i>results.length();i++)
+            for(int i = 0; i<results.length();i++)
             {
                 JSONObject itemMovie = results.getJSONObject(i);
 

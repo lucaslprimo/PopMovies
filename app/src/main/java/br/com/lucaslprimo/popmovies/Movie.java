@@ -3,10 +3,6 @@ package br.com.lucaslprimo.popmovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.json.JSONObject;
-
-import java.util.Date;
-
 /**
  * Created by Lucas Primo on 07-Dec-17.
  */
@@ -69,7 +65,7 @@ public class Movie implements Parcelable{
     }
 
     //Parcelable implementation
-    public Movie(Parcel in)
+    private Movie(Parcel in)
     {
         this.originalTitle = in.readString();
         this.moviePoster = in.readString();
