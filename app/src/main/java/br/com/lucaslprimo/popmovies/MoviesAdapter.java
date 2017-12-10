@@ -8,22 +8,35 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import br.com.lucaslprimo.popmovies.utilities.NetworkUtils;
+
 /**
  * Created by Lucas Primo on 08-Dec-17.
  */
 
-public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder>{
 
     private Movie[] mMoviesList;
+    private final OnClickListenerMovies mOnClickListenerMovies;
 
-    private final static String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
-
-    private final static String IMAGE_SIZE = "w185/";
+    public MoviesAdapter(OnClickListenerMovies onClickListenerMovies) {
+        mOnClickListenerMovies = onClickListenerMovies;
+    }
 
     public void setMoviesList(Movie[] moviesList)
     {
         mMoviesList = moviesList;
         notifyDataSetChanged();
+    }
+
+    public Movie getItem(int position)
+    {
+        return mMoviesList[position];
+    }
+
+    interface OnClickListenerMovies
+    {
+        void OnItemClick(Movie movieClicked);
     }
 
     @Override
@@ -45,7 +58,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         else return mMoviesList.length;
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder{
+    public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private final ImageView imagePoster;
 
@@ -53,11 +66,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             super(itemView);
 
             imagePoster = itemView.findViewById(R.id.iv_poster);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(int position)
         {
-            Picasso.with(itemView.getContext()).load(BASE_IMAGE_URL+IMAGE_SIZE+mMoviesList[position].getMoviePoster()).into(imagePoster);
+            Picasso.with(itemView.getContext()).load(NetworkUtils.BASE_IMAGE_URL+NetworkUtils.IMAGE_SIZE+mMoviesList[position].getMoviePoster()).into(imagePoster);
+        }
+
+        @Override
+        public void onClick(View view) {
+            mOnClickListenerMovies.OnItemClick(mMoviesList[getAdapterPosition()]);
         }
     }
 }

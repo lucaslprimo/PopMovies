@@ -1,6 +1,8 @@
 package br.com.lucaslprimo.popmovies;
 
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,7 +22,7 @@ import java.net.URL;
 import br.com.lucaslprimo.popmovies.utilities.MovieJsonUtils;
 import br.com.lucaslprimo.popmovies.utilities.NetworkUtils;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnClickListenerMovies{
 
     private RecyclerView mRecyclerView;
     private MoviesAdapter mMoviesAdapter;
@@ -28,11 +30,15 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout mErrorView;
     private ImageView mErrorImage;
     private TextView mErrorMessage;
+    private Movie[] mMovies;
 
     private final static int numColumnsGridView = 2;
 
     private final static int ERROR_NO_INTERNET = 1;
     private final static int ERROR_FETCH_FAILED = 2;
+
+    public final static String EXTRA_MOVIE = "movie";
+    public final static String INSTANCE_STATE = "arrayMovies";
 
     private String mSortBy = NetworkUtils.ORDER_BY_POPULAR;
 
@@ -49,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         mErrorImage = findViewById(R.id.iv_error);
         mErrorMessage = findViewById(R.id.tv_error_message);
 
-        mMoviesAdapter = new MoviesAdapter();
+        mMoviesAdapter = new MoviesAdapter(this);
         mRecyclerView.setAdapter(mMoviesAdapter);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,numColumnsGridView);
@@ -57,7 +63,19 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        loadMoviesData();
+        if(savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_STATE))
+        {
+            showData();
+            mMovies = (Movie[]) savedInstanceState.getParcelableArray(INSTANCE_STATE);
+            mMoviesAdapter.setMoviesList(mMovies);
+        }else
+            loadMoviesData();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArray(INSTANCE_STATE,mMovies);
+        super.onSaveInstanceState(outState);
     }
 
     private void showErrorMessage(int errorCode)
@@ -87,6 +105,9 @@ public class MainActivity extends AppCompatActivity {
     private void loadMoviesData()
     {
         mMoviesAdapter.setMoviesList(null);
+        showData();
+
+
 
         if(NetworkUtils.isOnline(MainActivity.this))
         {
@@ -124,6 +145,13 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void OnItemClick(Movie movieCliked) {
+        Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
+        intent.putExtra(EXTRA_MOVIE,movieCliked);
+        startActivity(intent);
+    }
+
     private class FetchMoviesTask extends AsyncTask<String,Void,Movie[]>
     {
         @Override
@@ -158,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
             if(movies!=null)
             {
+                mMovies = movies;
                 mMoviesAdapter.setMoviesList(movies);
                 showData();
             }else

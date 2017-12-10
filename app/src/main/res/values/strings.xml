@@ -4,7 +4,10 @@
     <string name="error_no_internet">No Internet</string>
     <string name="error_fetch_failed">Failed to get the data, please try again</string>
 
-    <string name="refresh">Refresh</string>
     <string name="sort_by_popular">by most popular</string>
     <string name="sort_by_rating">by top rated</string>
+
+    <string name="label_vote">Vote Average:</string>
+    <string name="label_release_date">Release Date:</string>
+    <string name="label_overview">Overview:</string>
 </resources>

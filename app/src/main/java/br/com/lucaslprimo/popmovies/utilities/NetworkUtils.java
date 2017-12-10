@@ -34,6 +34,10 @@ public class NetworkUtils {
     public final static String ORDER_BY_POPULAR = "popular";
     public final static String ORDER_BY_RATING = "top_rated";
 
+    public final static String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
+
+    public final static String IMAGE_SIZE = "w185/";
+
 
     /**
      * Builds the URL used to talk to the weather server using a location. This location is based
