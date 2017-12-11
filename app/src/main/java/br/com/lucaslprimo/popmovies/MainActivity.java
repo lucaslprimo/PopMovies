@@ -2,7 +2,9 @@ package br.com.lucaslprimo.popmovies;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.PersistableBundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -32,7 +34,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
     private TextView mErrorMessage;
     private Movie[] mMovies;
 
-    private final static int numColumnsGridView = 2;
+    private Snackbar mSnackBar;
+
+    private final static int NUM_COLUMNS_VIEWS = 2;
 
     private final static int ERROR_NO_INTERNET = 1;
     private final static int ERROR_FETCH_FAILED = 2;
@@ -49,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
 
         mRecyclerView = findViewById(R.id.rv_movies);
 
+        mSnackBar = Snackbar.make(mRecyclerView,R.string.label_snack_text,Snackbar.LENGTH_INDEFINITE);
+        mSnackBar.setAction(R.string.label_snack_try_again, new TryAgainInternetListener());
+
         mLoading = findViewById(R.id.pb_loading);
 
         mErrorView = findViewById(R.id.error_view);
@@ -58,22 +65,36 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
         mMoviesAdapter = new MoviesAdapter(this);
         mRecyclerView.setAdapter(mMoviesAdapter);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,numColumnsGridView);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,NUM_COLUMNS_VIEWS);
 
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
         if(savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_STATE))
         {
+
             showData();
             mMovies = (Movie[]) savedInstanceState.getParcelableArray(INSTANCE_STATE);
-            mMoviesAdapter.setMoviesList(mMovies);
+
+            if(mMovies != null)
+                mMoviesAdapter.setMoviesList(mMovies);
+            else
+                loadMoviesData();
         }else
             loadMoviesData();
     }
 
+    public class TryAgainInternetListener implements  View.OnClickListener
+    {
+        @Override
+        public void onClick(View view) {
+            loadMoviesData();
+        }
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
+
         outState.putParcelableArray(INSTANCE_STATE,mMovies);
         super.onSaveInstanceState(outState);
     }
@@ -84,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
         {
             mErrorImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_perm_scan_wifi_white_48dp));
             mErrorMessage.setText(R.string.error_no_internet);
+
         }else
         if(errorCode == ERROR_FETCH_FAILED)
         {
@@ -93,6 +115,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
 
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorView.setVisibility(View.VISIBLE);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mSnackBar.show();
+            }
+        }, 1000);
     }
 
     private void showData()
@@ -106,8 +135,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
     {
         mMoviesAdapter.setMoviesList(null);
         showData();
-
-
 
         if(NetworkUtils.isOnline(MainActivity.this))
         {

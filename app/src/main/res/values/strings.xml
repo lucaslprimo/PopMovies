@@ -2,7 +2,7 @@
     <string name="app_name">Pop Movies</string>
 
     <string name="error_no_internet">No Internet</string>
-    <string name="error_fetch_failed">Failed to get the data, please try again</string>
+    <string name="error_fetch_failed">Failed to get data, please try again</string>
 
     <string name="sort_by_popular">by most popular</string>
     <string name="sort_by_rating">by top rated</string>
@@ -10,4 +10,7 @@
     <string name="label_vote">Vote Average:</string>
     <string name="label_release_date">Release Date:</string>
     <string name="label_overview">Overview:</string>
+
+    <string name="label_snack_try_again">Try Again</string>
+    <string name="label_snack_text">Something wrong?</string>
 </resources>
