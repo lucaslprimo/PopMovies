@@ -13,4 +13,10 @@
 
     <string name="label_snack_try_again">Try Again</string>
     <string name="label_snack_text">Something wrong?</string>
+
+    <string name="label_content_desc_wifi">Wifi symbol with an exclamation signal</string>
+    <string name="label_content_desc_error">Exclamation signal</string>
+    <string name="label_content_desc_movie_poster">Movie Poster</string>
+
+    <string name="label_content_desc_movie_title">Dynamic movie title</string>
 </resources>

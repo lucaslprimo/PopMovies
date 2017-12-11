@@ -104,12 +104,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
         if(errorCode == ERROR_NO_INTERNET)
         {
             mErrorImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_perm_scan_wifi_white_48dp));
+            mErrorImage.setContentDescription(getString(R.string.label_content_desc_wifi));
             mErrorMessage.setText(R.string.error_no_internet);
 
         }else
         if(errorCode == ERROR_FETCH_FAILED)
         {
             mErrorImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_error_white_48dp));
+            mErrorImage.setContentDescription(getString(R.string.label_content_desc_error));
             mErrorMessage.setText(R.string.error_fetch_failed);
         }
 

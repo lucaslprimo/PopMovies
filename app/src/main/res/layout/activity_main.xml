@@ -30,7 +30,8 @@
             android:layout_height="48dp"
             android:src="@drawable/ic_perm_scan_wifi_white_48dp"
             android:layout_gravity="center"
-            android:id="@+id/iv_error"/>
+            android:id="@+id/iv_error"
+            android:contentDescription="@string/label_content_desc_wifi"/>
 
         <TextView
             android:layout_width="wrap_content"

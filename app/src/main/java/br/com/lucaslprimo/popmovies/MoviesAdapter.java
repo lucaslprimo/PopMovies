@@ -71,7 +71,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
         public void bind(int position)
         {
-            Picasso.with(itemView.getContext()).load(NetworkUtils.BASE_IMAGE_URL+NetworkUtils.IMAGE_SIZE+mMoviesList[position].getMoviePoster()).into(imagePoster);
+            Movie movie = mMoviesList[position];
+
+            Picasso.with(itemView.getContext()).load(NetworkUtils.BASE_IMAGE_URL+NetworkUtils.IMAGE_SIZE+movie.getMoviePoster()).into(imagePoster);
+            imagePoster.setContentDescription(movie.getOriginalTitle());
         }
 
         @Override
