@@ -48,12 +48,11 @@ public class DetailsActivity extends AppCompatActivity {
 
                     try {
                         Date date =  new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(movie.getReleaseDate());
-                        String releaseDate = DateFormat.getDateInstance(DateFormat.LONG).format(date) ;
+                        String releaseDate = DateFormat.getDateInstance(DateFormat.LONG).format(date);
                         mReleaseDate.setText(releaseDate);
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-
 
                     Picasso.with(this).load(NetworkUtils.BASE_IMAGE_URL+NetworkUtils.IMAGE_SIZE+movie.getMoviePoster()).into(mPoster);
                     mVoteAverage.setText(movie.getVoteAverage());

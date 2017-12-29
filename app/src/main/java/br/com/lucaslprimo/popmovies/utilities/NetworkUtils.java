@@ -13,8 +13,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
-import br.com.lucaslprimo.popmovies.BuildConfig;
-
 /**
  * Created by Lucas Primo on 07-Dec-17.
  */
@@ -24,7 +22,7 @@ public class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     //API KEY - THE MOVIES DB
-    private final static String API_KEY = BuildConfig.API_KEY;
+    private final static String API_KEY = "19625d635fb710fb65426164f13029c9";
     //BASE API URL
     private final static String BASE_API_URL = "http://api.themoviedb.org/3/";
     //Base query to get popular movies
