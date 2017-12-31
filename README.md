@@ -4,7 +4,7 @@ Project made for Stage 2 of Android Developer Udacity's Nanodregree
 
 ## Overview
 
-This is an Android App that lists movies by most popular or top rated, and show details of the selected movie, and it shows reviews and trailers of the selected movie. You can as well set your favorites, and the movies keep available offline. 
+This is an Android App that lists movies by most popular or top rated, and show details of the selected movie, and it shows reviews and trailers of the selected movie. You can as well set your favorites, and the movies are also available offline. 
 
 ## Considerantions for Running
 
