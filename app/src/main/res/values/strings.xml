@@ -3,6 +3,7 @@
 
     <string name="error_no_internet">No Internet</string>
     <string name="error_fetch_failed">Failed to get data, please try again</string>
+    <string name="error_fetch_failed_snack">Failed to get data.</string>
 
     <string name="sort_by_popular">by most popular</string>
     <string name="sort_by_rating">by top rated</string>
@@ -12,11 +13,37 @@
     <string name="label_overview">Overview:</string>
 
     <string name="label_snack_try_again">Try Again</string>
-    <string name="label_snack_text">Something wrong?</string>
+    <string name="label_snack_text">No Internet</string>
 
     <string name="label_content_desc_wifi">Wifi symbol with an exclamation signal</string>
     <string name="label_content_desc_error">Exclamation signal</string>
     <string name="label_content_desc_movie_poster">Movie Poster</string>
 
     <string name="label_content_desc_movie_title">Dynamic movie title</string>
+    
+    <string name="label_details_activity">Details</string>
+    <string name="default_release_date">11/08/1992</string>
+    <string name="default_note">9.9</string>
+    <string name="default_movie_title">Marvel vs Capcom</string>
+    <string name="lorem_ipsum">Quisque venenatis tellus eu nunc viverra volutpat. Integer molestie sodales dolor vel finibus. Nunc at velit et massa commodo tincidunt eget ut metus. Morbi ac tempor neque. Phasellus sit amet neque nec elit pellentesque sodales vel in nibh. Fusce vitae lectus fringilla, varius leo et, semper diam. Phasellus et lacus ultricies, fringilla metus vitae, gravida eros. Nunc eget odio nunc. Phasellus a nulla ornare, gravida arcu non, lobortis elit. Integer sit amet massa urna.</string>
+    <string name="default_trailer_name">Official Trailer</string>
+    <string name="label_videos">Videos</string>
+    <string name="label_reviews">Reviews</string>
+
+    <string name="share_with">Share with</string>
+    <string name="share_video_text">Here\'s a trailer I\'ve liked </string>
+
+    <string name="action_favorite">Favorite</string>
+
+    <string name="unavailable_offline">Unavailable Offline</string>
+    <string name="empty_content">Nothing here yet!</string>
+    <string name="sort_by_favorites">Favorites</string>
+
+    <string name="content_description_background">Background Movie</string>
+    <string name="content_description_play_button">Play Trailer</string>
+    <string name="content_description_share_button">Share Trailer</string>
+    <string name="content_description_line">Divider line</string>
+
+
+
 </resources>

@@ -20,11 +20,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailsActivity">
+        <activity android:name=".DetailsActivity"
+            android:label="@string/label_details_activity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
         </activity>
+
+        <provider
+            android:authorities="br.com.lucaslprimo.popmovies"
+            android:name=".data.MoviesContentProvider"
+            android:exported="false"/>
+
+        <service android:name=".sync.MoviesIntentService" />
+
     </application>
 
 </manifest>

@@ -1,10 +1,12 @@
 package br.com.lucaslprimo.popmovies;
 
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.database.Cursor;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,10 +23,14 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.net.URL;
 
+
+import br.com.lucaslprimo.popmovies.data.MovieContract;
+import br.com.lucaslprimo.popmovies.sync.MovieTask;
+import br.com.lucaslprimo.popmovies.sync.MoviesIntentService;
 import br.com.lucaslprimo.popmovies.utilities.MovieJsonUtils;
 import br.com.lucaslprimo.popmovies.utilities.NetworkUtils;
 
-public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnClickListenerMovies{
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnClickListenerMovies, LoaderManager.LoaderCallbacks<Movie[]>{
 
     private RecyclerView mRecyclerView;
     private MoviesAdapter mMoviesAdapter;
@@ -42,9 +48,17 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
     private final static int ERROR_FETCH_FAILED = 2;
 
     public final static String EXTRA_MOVIE = "movie";
-    public final static String INSTANCE_STATE = "arrayMovies";
+    private final static String INSTANCE_STATE = "arrayMovies";
 
     private String mSortBy = NetworkUtils.ORDER_BY_POPULAR;
+
+    private final static int LOADER_MOVIES_WEB_ID = 1;
+    private final static int LOADER_MOVIES_LOCAL_ID = 2;
+
+    private final static String ORDER_BY_FAVORITES = "favorites";
+
+    private boolean mLoaderWebStarted = false;
+    private boolean mLoaderLocalStarted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
 
         if(savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_STATE))
         {
-
             showData();
             mMovies = (Movie[]) savedInstanceState.getParcelableArray(INSTANCE_STATE);
 
@@ -82,6 +95,155 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
                 loadMoviesData();
         }else
             loadMoviesData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(mSortBy.equals(ORDER_BY_FAVORITES))
+        {
+            loadMoviesData();
+        }
+    }
+
+    @Override
+    public Loader<Movie[]> onCreateLoader(int id, final Bundle args) {
+
+        if(id == LOADER_MOVIES_WEB_ID) {
+
+            return new AsyncTaskLoader<Movie[]>(this) {
+
+                Movie[] mMovies;
+
+                @Override
+                protected void onStartLoading() {
+                    super.onStartLoading();
+
+                    if (mMovies != null)
+                        deliverResult(mMovies);
+                    else
+                        forceLoad();
+                }
+
+                @Override
+                public Movie[] loadInBackground() {
+
+                    String orderBy = args.getString("orderBy");
+
+                    URL url = NetworkUtils.buildUrlMovies(orderBy);
+
+                    Movie[] movies = null;
+                    try {
+                        String result = NetworkUtils.getResponseFromHttpUrl(url);
+
+                        if (result != null)
+                            movies = MovieJsonUtils.getMoviesFromJson(result);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    return movies;
+                }
+
+                @Override
+                public void deliverResult(Movie[] data) {
+                    mMovies = data;
+                    super.deliverResult(data);
+                }
+            };
+        }else
+            if(id == LOADER_MOVIES_LOCAL_ID)
+            {
+                return new AsyncTaskLoader<Movie[]>(this) {
+
+
+
+                    Movie[] mMovies;
+
+                    @Override
+                    protected void onStartLoading() {
+                        super.onStartLoading();
+
+                        if (mMovies != null)
+                            deliverResult(mMovies);
+                        else
+                            forceLoad();
+                    }
+
+                    @Override
+                    public Movie[] loadInBackground() {
+
+                        String orderBy = args.getString("orderBy");
+
+                        Movie[] movies = null;
+                        Cursor cursor;
+
+                        String orderByColumn;
+                        String selection = null;
+
+                        if(orderBy!=null)
+                        {
+                            if(orderBy.equals(NetworkUtils.ORDER_BY_POPULAR))
+                                orderByColumn = MovieContract.MovieEntrys.COLUMN_POPULARITY + " DESC";
+                            else
+                            if(orderBy.equals(NetworkUtils.ORDER_BY_RATING))
+                                orderByColumn = MovieContract.MovieEntrys.COLUMN_VOTE_AVERAGE + " DESC";
+                            else
+                            {
+                                selection = MovieContract.MovieEntrys.COLUMN_FAVORITE+"=1";
+                                orderByColumn = MovieContract.MovieEntrys.COLUMN_TITLE + " ASC";
+                            }
+
+                            cursor = getContentResolver().query(MovieContract.MovieEntrys.CONTENT_URI,null, selection,null, orderByColumn);
+
+                            movies = MovieContract.getMoviesFromCursor(cursor);
+                        }
+
+                        return movies;
+                    }
+
+                    @Override
+                    public void deliverResult(Movie[] data) {
+                        mMovies = data;
+                        super.deliverResult(data);
+                    }
+                };
+            }
+
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Movie[]> loader, Movie[] movies) {
+
+        mLoading.setVisibility(View.INVISIBLE);
+
+        if(movies !=null)
+        {
+            mMovies = movies;
+            mMoviesAdapter.setMoviesList(movies);
+            showData();
+
+            runSyncService(mMovies);
+
+        }else
+            showMessage(ERROR_FETCH_FAILED);
+
+    }
+
+    private void runSyncService(Movie[] arrayMovies)
+    {
+        Intent intent = new Intent(this, MoviesIntentService.class);
+        intent.putExtra(Movie.MOVIE_INTENT,arrayMovies);
+        intent.setAction(MovieTask.ACTION_SYNC_MOVIES);
+
+        startService(intent);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Movie[]> loader) {
+
     }
 
     public class TryAgainInternetListener implements  View.OnClickListener
@@ -95,24 +257,27 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
     @Override
     public void onSaveInstanceState(Bundle outState) {
 
-        outState.putParcelableArray(INSTANCE_STATE,mMovies);
+        outState.putParcelableArray(INSTANCE_STATE, mMovies);
         super.onSaveInstanceState(outState);
     }
 
-    private void showErrorMessage(int errorCode)
+    private void showMessage(int errorCode)
     {
         if(errorCode == ERROR_NO_INTERNET)
         {
-            mErrorImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_perm_scan_wifi_white_48dp));
+            mErrorImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_perm_scan_wifi_48px));
             mErrorImage.setContentDescription(getString(R.string.label_content_desc_wifi));
             mErrorMessage.setText(R.string.error_no_internet);
+            mSnackBar.setText(R.string.error_no_internet);
 
         }else
         if(errorCode == ERROR_FETCH_FAILED)
         {
-            mErrorImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_error_white_48dp));
+            mErrorImage.setImageDrawable(getResources().getDrawable(R.drawable.ic_error_48px));
             mErrorImage.setContentDescription(getString(R.string.label_content_desc_error));
             mErrorMessage.setText(R.string.error_fetch_failed);
+            mSnackBar.setText(R.string.error_fetch_failed_snack);
+
         }
 
         mRecyclerView.setVisibility(View.INVISIBLE);
@@ -132,19 +297,49 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
         mErrorView.setVisibility(View.INVISIBLE);
     }
 
-
     private void loadMoviesData()
     {
         mMoviesAdapter.setMoviesList(null);
         showData();
 
+        mLoading.setVisibility(View.VISIBLE);
+
         if(NetworkUtils.isOnline(MainActivity.this))
         {
-            new FetchMoviesTask().execute(mSortBy);
+            if(mSortBy.equals(ORDER_BY_FAVORITES))
+            {
+                runLoaderLocal();
+            }else {
+               runLoaderWeb();
+            }
         }else
         {
-            showErrorMessage(ERROR_NO_INTERNET);
+            showMessage(ERROR_NO_INTERNET);
+            runLoaderLocal();
         }
+    }
+
+    private void runLoaderWeb()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putString("orderBy", mSortBy);
+
+        if (!mLoaderWebStarted) {
+            getSupportLoaderManager().initLoader(LOADER_MOVIES_WEB_ID, bundle, this);
+            mLoaderWebStarted = true;
+        } else
+            getSupportLoaderManager().restartLoader(LOADER_MOVIES_WEB_ID, bundle, this);
+    }
+
+    private void runLoaderLocal()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putString("orderBy", mSortBy);
+        if (!mLoaderLocalStarted) {
+            getSupportLoaderManager().initLoader(LOADER_MOVIES_LOCAL_ID, bundle, this);
+            mLoaderLocalStarted = true;
+        } else
+            getSupportLoaderManager().restartLoader(LOADER_MOVIES_LOCAL_ID, bundle, this);
     }
 
     @Override
@@ -171,56 +366,19 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
             loadMoviesData();
         }
 
+        if(item.getItemId() == R.id.action_sort_by_favorites)
+        {
+            mSortBy = ORDER_BY_FAVORITES;
+            loadMoviesData();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void OnItemClick(Movie movieCliked) {
         Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
-        intent.putExtra(EXTRA_MOVIE,movieCliked);
+        intent.putExtra(EXTRA_MOVIE, movieCliked);
         startActivity(intent);
-    }
-
-    private class FetchMoviesTask extends AsyncTask<String,Void,Movie[]>
-    {
-        @Override
-        protected void onPreExecute() {
-
-            mLoading.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected Movie[] doInBackground(String... params) {
-
-            String orderBy = params[0];
-
-            URL url = NetworkUtils.buildUrl(orderBy);
-
-            Movie[] movies = null;
-            try {
-                String result = NetworkUtils.getResponseFromHttpUrl(url);
-
-                movies = MovieJsonUtils.getMoviesFromJson(result);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return movies;
-        }
-
-        @Override
-        protected void onPostExecute(Movie[] movies) {
-
-            mLoading.setVisibility(View.INVISIBLE);
-
-            if(movies!=null)
-            {
-                mMovies = movies;
-                mMoviesAdapter.setMoviesList(movies);
-                showData();
-            }else
-                showErrorMessage(ERROR_FETCH_FAILED);
-
-        }
     }
 }

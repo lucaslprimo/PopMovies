@@ -10,11 +10,17 @@ import android.os.Parcelable;
 public class Movie implements Parcelable{
 
     private int id;
+    private int dbId;
     private String originalTitle;
     private String moviePoster;
     private String overview;
     private String voteAverage;
+    private String popularity;
     private String releaseDate;
+    private boolean favorite;
+
+    public static final String MOVIE_INTENT = "movie";
+    public static final String MOVIE_INTENT_ID = "movie_id";
 
     public int getId() {
         return id;
@@ -22,6 +28,14 @@ public class Movie implements Parcelable{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(int dbId) {
+        this.dbId = dbId;
     }
 
     public String getOriginalTitle() {
@@ -48,6 +62,14 @@ public class Movie implements Parcelable{
         this.overview = overview;
     }
 
+    public String getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(String popularity) {
+        this.popularity = popularity;
+    }
+
     public String getVoteAverage() {
         return voteAverage;
     }
@@ -64,14 +86,25 @@ public class Movie implements Parcelable{
         this.releaseDate = releaseDate;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
     //Parcelable implementation
     private Movie(Parcel in)
     {
+        this.id = in.readInt();
         this.originalTitle = in.readString();
         this.moviePoster = in.readString();
         this.overview = in.readString();
+        this.popularity = in.readString();
         this.voteAverage = in.readString();
         this.releaseDate = in.readString();
+        this.favorite   = in.readByte() != 0;
     }
 
     public Movie()
@@ -86,11 +119,14 @@ public class Movie implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
         parcel.writeString(originalTitle);
         parcel.writeString(moviePoster);
         parcel.writeString(overview);
+        parcel.writeString(popularity);
         parcel.writeString(voteAverage);
         parcel.writeString(releaseDate);
+        parcel.writeByte((byte) (favorite ? 1 : 0));
     }
 
     static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>()

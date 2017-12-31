@@ -26,9 +26,9 @@
         android:alpha="0.5">
 
         <ImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_perm_scan_wifi_white_48dp"
+            android:layout_width="@dimen/alert_icon_size"
+            android:layout_height="@dimen/alert_icon_size"
+            android:src="@drawable/ic_perm_scan_wifi_48px"
             android:layout_gravity="center"
             android:id="@+id/iv_error"
             android:contentDescription="@string/label_content_desc_wifi"/>
@@ -47,8 +47,8 @@
     </LinearLayout>
 
     <ProgressBar
-        android:layout_width="42dp"
-        android:layout_height="42dp"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="@dimen/progress_bar_size"
         android:id="@+id/pb_loading"
         android:layout_gravity="center"
         android:visibility="invisible"/>

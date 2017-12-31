@@ -14,13 +14,15 @@ import br.com.lucaslprimo.popmovies.Movie;
 
 public class MovieJsonUtils {
 
-    private static final String TAG = NetworkUtils.class.getSimpleName();
+    private static final String TAG = MovieJsonUtils.class.getSimpleName();
 
     private static final String MOVIE_ORIGINAL_TITLE = "original_title";
     private static final String MOVIE_POSTER_PATH = "poster_path";
     private static final String MOVIE_VOTE_AVERAGE = "vote_average";
     private static final String MOVIE_OVERVIEW = "overview";
+    private static final String MOVIE_POPULARITY = "popularity";
     private static final String MOVIE_RELEASE_DATE = "release_date";
+    private static final String MOVIE_ID = "id";
 
     public static Movie[] getMoviesFromJson(String moviesJsonString)
     {
@@ -44,8 +46,10 @@ public class MovieJsonUtils {
                 movie.setOriginalTitle(itemMovie.getString(MOVIE_ORIGINAL_TITLE));
                 movie.setMoviePoster(itemMovie.getString(MOVIE_POSTER_PATH));
                 movie.setOverview(itemMovie.getString(MOVIE_OVERVIEW));
+                movie.setPopularity(itemMovie.getString(MOVIE_POPULARITY));
                 movie.setVoteAverage(itemMovie.getString(MOVIE_VOTE_AVERAGE));
                 movie.setReleaseDate(itemMovie.getString(MOVIE_RELEASE_DATE));
+                movie.setId(itemMovie.getInt(MOVIE_ID));
 
                 moviesArray[i] = movie;
             }

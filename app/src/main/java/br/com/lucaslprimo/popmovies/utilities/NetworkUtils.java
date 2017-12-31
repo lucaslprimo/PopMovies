@@ -13,6 +13,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+import br.com.lucaslprimo.popmovies.BuildConfig;
+
 /**
  * Created by Lucas Primo on 07-Dec-17.
  */
@@ -22,7 +24,9 @@ public class NetworkUtils {
     private static final String TAG = NetworkUtils.class.getSimpleName();
 
     //API KEY - THE MOVIES DB
-    private final static String API_KEY = "19625d635fb710fb65426164f13029c9";
+
+    private final static String API_KEY = BuildConfig.API_KEY;
+
     //BASE API URL
     private final static String BASE_API_URL = "http://api.themoviedb.org/3/";
     //Base query to get popular movies
@@ -33,19 +37,55 @@ public class NetworkUtils {
     //Set the order of the movies list
     public final static String ORDER_BY_POPULAR = "popular";
     public final static String ORDER_BY_RATING = "top_rated";
+    //videos query
+    private final static String VIDEOS_QUERY = "/videos";
+
+    //reviews query
+    private final static String REVIEWS_QUERY = "/reviews";
 
     public final static String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
 
     public final static String IMAGE_SIZE = "w185/";
 
 
-    /**
-     * Builds the URL used to talk to the weather server using a location. This location is based
-     * on the query capabilities of the weather provider that we are using.
-     *
-     * @return The URL to use to query the weather server.
-     */
-    public static URL buildUrl(String orderBy) {
+
+    public static URL buildUrlVideos(String id) {
+
+        Uri builtUri = Uri.parse(BASE_API_URL+MOVIES_QUERY_BASE+id+VIDEOS_QUERY).buildUpon()
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
+    public static URL buildUrlReviews(String id) {
+
+        Uri builtUri = Uri.parse(BASE_API_URL+MOVIES_QUERY_BASE+id+REVIEWS_QUERY).buildUpon()
+                .appendQueryParameter(API_KEY_PARAM, API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "Built URI " + url);
+
+        return url;
+    }
+
+    public static URL buildUrlMovies(String orderBy) {
 
         Uri builtUri = Uri.parse(BASE_API_URL+MOVIES_QUERY_BASE+orderBy).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
