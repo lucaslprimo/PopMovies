@@ -312,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
             }else {
                runLoaderWeb();
             }
+
         }else
         {
             showMessage(ERROR_NO_INTERNET);
