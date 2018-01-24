@@ -51,7 +51,7 @@ public class NetworkUtils {
 
     public static URL buildUrlVideos(String id) {
 
-        Uri builtUri = Uri.parse(BASE_API_URL+MOVIES_QUERY_BASE+id+VIDEOS_QUERY).buildUpon()
+        Uri builtUri = Uri.parse(String.format("%s%s%s%s",BASE_API_URL,MOVIES_QUERY_BASE,id,VIDEOS_QUERY)).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
                 .build();
 
@@ -69,7 +69,7 @@ public class NetworkUtils {
 
     public static URL buildUrlReviews(String id) {
 
-        Uri builtUri = Uri.parse(BASE_API_URL+MOVIES_QUERY_BASE+id+REVIEWS_QUERY).buildUpon()
+        Uri builtUri = Uri.parse(String.format("%s%s%s%s",BASE_API_URL,MOVIES_QUERY_BASE,id,REVIEWS_QUERY)).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
                 .build();
 
@@ -87,7 +87,7 @@ public class NetworkUtils {
 
     public static URL buildUrlMovies(String orderBy) {
 
-        Uri builtUri = Uri.parse(BASE_API_URL+MOVIES_QUERY_BASE+orderBy).buildUpon()
+        Uri builtUri = Uri.parse(String.format("%s%s%s",BASE_API_URL,MOVIES_QUERY_BASE,orderBy)).buildUpon()
                 .appendQueryParameter(API_KEY_PARAM, API_KEY)
                 .build();
 

@@ -23,16 +23,16 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="content2">
+    <style name="contentMedium">
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="SubTitle2">
+    <style name="SubTitleSmall">
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="content3">
+    <style name="contentSmall">
         <item name="android:textSize">16sp</item>
     </style>
 

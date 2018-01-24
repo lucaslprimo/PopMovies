@@ -150,7 +150,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                     }else
                         loadOnlineData();
 
-                    new movieDBTask().execute();
+                    new MovieDbTask().execute();
                 }
             }
         }
@@ -387,7 +387,7 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
     }
 
-    public class movieDBTask extends AsyncTask<Void,Void,Cursor>
+    public class MovieDbTask extends AsyncTask<Void,Void,Cursor>
     {
 
         @Override
@@ -413,6 +413,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                 mMovie.setFavorite(cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntrys.COLUMN_FAVORITE)) == 1);
                 if(menuItemStar!=null)
                     updateFavoriteState();
+
+                cursor.close();
             }
         }
     }

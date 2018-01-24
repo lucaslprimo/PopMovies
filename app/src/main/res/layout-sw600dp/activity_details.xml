@@ -29,7 +29,8 @@
         android:layout_weight="1"
         android:fillViewport="true"
         android:orientation="vertical"
-        tools:context="br.com.lucaslprimo.popmovies.DetailsActivity">
+        tools:context="br.com.lucaslprimo.popmovies.DetailsActivity"
+        android:descendantFocusability="blocksDescendants">
 
 
         <android.support.constraint.ConstraintLayout
