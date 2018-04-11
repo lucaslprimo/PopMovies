@@ -13,7 +13,6 @@ This Android Application uses the the API Service "The Movies Database". To run 
 ## Libraries used on this project
 
 - Picasso for image cache and download
-- Volley for web Requests
 - Expresso for UI Tests
 - Blurry for image blur
 - Calligraphy for custom Fonts
