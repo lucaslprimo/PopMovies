@@ -80,7 +80,7 @@ public class Video implements Parcelable{
         parcel.writeString(type);
     }
 
-    static final Parcelable.Creator<Video> CREATOR = new Parcelable.Creator<Video>()
+    public static final Parcelable.Creator<Video> CREATOR = new Parcelable.Creator<Video>()
     {
         @Override
         public Video createFromParcel(Parcel parcel) {

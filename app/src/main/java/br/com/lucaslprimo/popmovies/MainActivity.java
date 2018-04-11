@@ -1,12 +1,17 @@
 package br.com.lucaslprimo.popmovies;
 
+import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.Image;
 import android.os.Handler;
+import android.provider.FontsContract;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.provider.FontRequest;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,6 +35,8 @@ import br.com.lucaslprimo.popmovies.sync.MovieTask;
 import br.com.lucaslprimo.popmovies.sync.MoviesIntentService;
 import br.com.lucaslprimo.popmovies.utilities.MovieJsonUtils;
 import br.com.lucaslprimo.popmovies.utilities.NetworkUtils;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnClickListenerMovies, LoaderManager.LoaderCallbacks<Movie[]>{
 
@@ -60,10 +68,27 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
     private boolean mLoaderWebStarted = false;
     private boolean mLoaderLocalStarted = false;
 
+    android.support.v7.widget.Toolbar toolbar;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("font/Quicksand-Regular.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
+        );
+
+
+        toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
 
         mRecyclerView = findViewById(R.id.rv_movies);
 
@@ -306,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
 
         if(NetworkUtils.isOnline(MainActivity.this))
         {
+
             if(mSortBy.equals(ORDER_BY_FAVORITES))
             {
                 runLoaderLocal();
@@ -347,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
 
-        menuInflater.inflate(R.menu.main,menu);
+        menuInflater.inflate(R.menu.main, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -377,9 +403,13 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.OnC
     }
 
     @Override
-    public void OnItemClick(Movie movieCliked) {
+    public void OnItemClick(Movie movieCliked, ImageView viewPoster) {
+
+        ActivityOptions options = ActivityOptions
+                .makeSceneTransitionAnimation(this, viewPoster, getString(R.string.transition_video_cover));
+
         Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
         intent.putExtra(EXTRA_MOVIE, movieCliked);
-        startActivity(intent);
+        startActivity(intent,options.toBundle());
     }
 }

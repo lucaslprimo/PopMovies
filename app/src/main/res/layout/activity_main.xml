@@ -1,56 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="br.com.lucaslprimo.popmovies.MainActivity"
-    android:background="@color/colorPrimaryDark"
-    >
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/main.toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/rv_movies"
-        android:visibility="invisible"
-        android:clipToPadding="true">
-
-    </android.support.v7.widget.RecyclerView>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/error_view"
-        android:orientation="vertical"
-        android:visibility="invisible"
-        android:alpha="0.5">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp">
 
         <ImageView
-            android:layout_width="@dimen/alert_icon_size"
-            android:layout_height="@dimen/alert_icon_size"
-            android:src="@drawable/ic_perm_scan_wifi_48px"
-            android:layout_gravity="center"
-            android:id="@+id/iv_error"
-            android:contentDescription="@string/label_content_desc_wifi"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:padding="10dp"
+            android:scaleType="fitStart"
+            android:src="@drawable/popmovies_logo"
+            android:theme="@style/Base.ThemeOverlay.AppCompat">
 
-        <TextView
+        </ImageView>
+    </android.support.v7.widget.Toolbar>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="br.com.lucaslprimo.popmovies.MainActivity">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_movies"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="true"
+            android:visibility="invisible">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <LinearLayout
+            android:id="@+id/error_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/error_no_internet"
-            android:padding="16dp"
-            android:textSize="20sp"
-            android:textColor="@android:color/white"
-            android:id="@+id/tv_error_message"
             android:layout_gravity="center"
-            android:textAlignment="center"/>
+            android:alpha="0.5"
+            android:orientation="vertical"
+            android:visibility="invisible">
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_error"
+                android:layout_width="@dimen/alert_icon_size"
+                android:layout_height="@dimen/alert_icon_size"
+                android:layout_gravity="center"
+                android:contentDescription="@string/label_content_desc_wifi"
+                android:src="@drawable/ic_perm_scan_wifi_48px" />
 
-    <ProgressBar
-        android:layout_width="@dimen/progress_bar_size"
-        android:layout_height="@dimen/progress_bar_size"
-        android:id="@+id/pb_loading"
-        android:layout_gravity="center"
-        android:visibility="invisible"/>
+            <TextView
+                android:id="@+id/tv_error_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="16dp"
+                android:text="@string/error_no_internet"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
 
-</FrameLayout>
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/pb_loading"
+            android:layout_width="@dimen/progress_bar_size"
+            android:layout_height="@dimen/progress_bar_size"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
+
+    </FrameLayout>
+
+</LinearLayout>
+
+

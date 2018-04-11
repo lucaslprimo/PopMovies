@@ -52,10 +52,10 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="1dp"
+        android:contentDescription="@string/content_description_line"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@color/colorAccent"
-        android:contentDescription="@string/content_description_line"/>
+        app:srcCompat="@color/colorPrimaryDark" />
 
 </android.support.constraint.ConstraintLayout>

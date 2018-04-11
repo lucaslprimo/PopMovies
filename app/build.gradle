@@ -4,12 +4,13 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "br.com.lucaslprimo.popmovies"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        buildConfigField "String","API_KEY", '"API_KEY_HERE"'
+        buildConfigField "String","API_KEY", '"APY KEY HERE"'
+
     }
     buildTypes {
         release {
@@ -18,15 +19,15 @@ android {
 
         }
     }
-
-
 }
 
 dependencies {
+    implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
+    implementation 'jp.wasabeef:blurry:2.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.android.support:recyclerview-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'

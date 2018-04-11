@@ -21,7 +21,5 @@ public class MoviesIntentService extends IntentService {
 
             MovieTask.executeTask(action, intent, getApplicationContext());
         }
-
-
     }
 }

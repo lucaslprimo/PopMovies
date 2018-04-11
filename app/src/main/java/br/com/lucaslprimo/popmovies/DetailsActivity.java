@@ -1,26 +1,35 @@
 package br.com.lucaslprimo.popmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,6 +45,8 @@ import br.com.lucaslprimo.popmovies.sync.MoviesIntentService;
 import br.com.lucaslprimo.popmovies.utilities.NetworkUtils;
 import br.com.lucaslprimo.popmovies.utilities.ReviewJsonUtils;
 import br.com.lucaslprimo.popmovies.utilities.VideoJsonUtils;
+import jp.wasabeef.blurry.Blurry;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class DetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
 
@@ -61,18 +72,35 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     private ReviewsAdapter mReviewsAdapter;
 
     private Movie mMovie;
-    private MenuItem menuItemStar;
+    private FloatingActionButton menuItemStar;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        Toolbar toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setTitle(" ");
+
+        menuItemStar = findViewById(R.id.favorites_button);
+
         TextView mTitle = findViewById(R.id.tv_movie_title);
         TextView mOverview = findViewById(R.id.tv_overview);
         TextView mVoteAverage = findViewById(R.id.tv_vote_average);
         TextView mReleaseDate = findViewById(R.id.tv_release_date);
-        ImageView mPoster = findViewById(R.id.iv_poster);
+        final ImageView mPoster = findViewById(R.id.iv_poster);
+        final ImageView mBgPoster = findViewById(R.id.bg_details_cover);
         mRecyclerViewVideos = findViewById(R.id.rv_trailers);
         mRecyclerViewReviews = findViewById(R.id.rv_reviews);
 
@@ -117,7 +145,8 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
 
                     mMovie = movie;
 
-                    mTitle.setText(movie.getOriginalTitle());
+
+                    mTitle.setText(mMovie.getOriginalTitle());
                     mOverview.setText(movie.getOverview());
 
                     try {
@@ -128,8 +157,28 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
                         e.printStackTrace();
                     }
 
-                    Picasso.with(this).load(NetworkUtils.BASE_IMAGE_URL+NetworkUtils.IMAGE_SIZE+ movie.getMoviePoster()).into(mPoster);
-                    mVoteAverage.setText(movie.getVoteAverage());
+                    Target targetPoster = new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            mPoster.setImageBitmap(bitmap);
+
+                            if(!getResources().getBoolean(R.bool.isTablet))
+                                Blurry.with(DetailsActivity.this).from(bitmap).into(mBgPoster);
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Drawable errorDrawable) {
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        }
+                    };
+
+                    Picasso.with(this).load(NetworkUtils.BASE_IMAGE_URL+NetworkUtils.IMAGE_SIZE+ movie.getMoviePoster())
+                            .into(targetPoster);
+
+                    mVoteAverage.setText( String.format("%.1f",Float.parseFloat(movie.getVoteAverage())));
 
 
                     if(savedInstanceState !=null && savedInstanceState.containsKey(INSTANCE_REVIEWS))
@@ -423,44 +472,59 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
     {
         if(mMovie.isFavorite())
         {
-            menuItemStar.setIcon(getResources().getDrawable(R.drawable.ic_star_rate_18px));
+            menuItemStar.setImageResource(R.drawable.ic_star_rate_18px);
         }else
         {
-            menuItemStar.setIcon(getResources().getDrawable(R.drawable.ic_star_border_18px));
+            menuItemStar.setImageResource(R.drawable.ic_star_border_18px);
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.details_menu,menu);
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater menuInflater = getMenuInflater();
+//        menuInflater.inflate(R.menu.details_menu,menu);
+//
+//        menuItemStar = menu.findItem(R.id.action_favorite);
+//
+//        updateFavoriteState();
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
-        menuItemStar = menu.findItem(R.id.action_favorite);
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//
+//        if(item.getItemId() == R.id.action_favorite)
+//        {
+//            if(mMovie.isFavorite())
+//            {
+//                removeFavorite();
+//                mMovie.setFavorite(false);
+//                updateFavoriteState();
+//            }else
+//            {
+//                saveFavorite();
+//                mMovie.setFavorite(true);
+//                updateFavoriteState();
+//            }
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
-        updateFavoriteState();
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if(item.getItemId() == R.id.action_favorite)
+    public void favoriteClick(View v)
+    {
+        if(mMovie.isFavorite())
         {
-            if(mMovie.isFavorite())
-            {
-                removeFavorite();
-                mMovie.setFavorite(false);
-                updateFavoriteState();
-            }else
-            {
-                saveFavorite();
-                mMovie.setFavorite(true);
-                updateFavoriteState();
-            }
+            removeFavorite();
+            mMovie.setFavorite(false);
+            updateFavoriteState();
+        }else
+        {
+            saveFavorite();
+            mMovie.setFavorite(true);
+            updateFavoriteState();
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void saveFavorite()
@@ -479,5 +543,11 @@ public class DetailsActivity extends AppCompatActivity implements LoaderManager.
         intent.setAction(MovieTask.ACTION_REMOVE_FAVORITE);
 
         startService(intent);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        this.onBackPressed();
+        return true;
     }
 }

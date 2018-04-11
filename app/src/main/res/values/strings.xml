@@ -44,6 +44,8 @@
     <string name="content_description_share_button">Share Trailer</string>
     <string name="content_description_line">Divider line</string>
 
+    <string name="transition_video_cover">video_cover</string>
+
 
 
 </resources>

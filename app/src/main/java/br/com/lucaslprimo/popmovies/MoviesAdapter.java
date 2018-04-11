@@ -1,5 +1,6 @@
 package br.com.lucaslprimo.popmovies;
 
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +37,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
     interface OnClickListenerMovies
     {
-        void OnItemClick(Movie movieClicked);
+        void OnItemClick(Movie movieClicked, ImageView viewPoster);
     }
 
     @Override
@@ -79,7 +80,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
 
         @Override
         public void onClick(View view) {
-            mOnClickListenerMovies.OnItemClick(mMoviesList[getAdapterPosition()]);
+            mOnClickListenerMovies.OnItemClick(mMoviesList[getAdapterPosition()], imagePoster);
         }
     }
 }

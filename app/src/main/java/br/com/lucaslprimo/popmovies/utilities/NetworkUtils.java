@@ -45,7 +45,7 @@ public class NetworkUtils {
 
     public final static String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/";
 
-    public final static String IMAGE_SIZE = "w185/";
+    public final static String IMAGE_SIZE = "w500/";
 
 
 
